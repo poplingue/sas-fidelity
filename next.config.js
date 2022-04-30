@@ -1,6 +1,4 @@
 const withOffline = require("next-offline");
+const withPlugins = require('next-compose-plugins');
 
-// your next.js configs
-const nextConfig = {};
-
-module.exports = withOffline(nextConfig);
+module.exports = withPlugins([withOffline()]);

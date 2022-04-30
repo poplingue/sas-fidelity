@@ -6,6 +6,8 @@ export default function Home() {
     useEffect(() => {
         if ('serviceWorker' in navigator) {
 
+            window.addEventListener('fetch', () => console.log('fetch'));
+
             window.addEventListener('beforeinstallprompt', function () {
                 console.log('==== beforeinstallprompt ==== ');
             });

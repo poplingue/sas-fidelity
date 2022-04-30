@@ -36,3 +36,4 @@ yarn-error.log*
 
 # sw
 /public/workbox-*
+/public/sw*

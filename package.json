@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "server": "yarn build && NODE_ENV=production node server.js"
+    "start": "next start && NODE_ENV=production node server.js"
   },
   "dependencies": {
     "@material-ui/styles": "^4.11.5",

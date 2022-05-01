@@ -43,7 +43,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/",
+  "start_url": "/fidelity/email-sent",
   "display": "standalone",
   "theme_color": "#0de55c",
   "background_color": "#5ffc99"

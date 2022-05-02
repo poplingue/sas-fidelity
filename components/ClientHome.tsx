@@ -1,14 +1,16 @@
 import {useEffect, useState} from "react";
-import QRCode from "react-qr-code";
 import Link from "next/link";
 
-export default function EmailSent() {
+export default function ClientHome({id}) {
     let promptEvent = null;
-    const [email, setEmail] = useState("")
+    const [init, setInit] = useState(true);
+    const [fidelityEmail, setFidelityEmail] = useState("");
 
     const listenToUserAction = () => {
         const installBtn = document.querySelector("#button");
-        installBtn.addEventListener("click", presentAddToHome);
+        if (installBtn) {
+            installBtn.addEventListener("click", presentAddToHome);
+        }
     };
 
     const isInStandaloneMode = () =>
@@ -47,10 +49,16 @@ export default function EmailSent() {
     };
 
     useEffect(() => {
-        if (!email) {
-            setEmail(localStorage.getItem("fidelity-email"))
+        if (!fidelityEmail) {
+            setFidelityEmail(localStorage.getItem("fidelity-email"));
         }
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (init) {
+            setInit(false);
+        }
+    }, []);
 
     useEffect(() => {
         if ("serviceWorker" in navigator) {
@@ -81,14 +89,39 @@ export default function EmailSent() {
             });
         }
     }, []);
-    return (
-        <section>
-            Vous avez reçu un email
-            Bienvenue dans la communauté
-            <br/>
-            {email}
-            <QRCode value={email}/>
-            <Link href="/">Accueil</Link>
-        </section>
-    );
+
+    const icons = {
+        ios: {
+            label: () => `ajouter à l'écran d'accueil`,
+            menu: () => <img src="assets/ios-menu.svg"/>,
+            install: () => <img src="assets/ios-install.svg"/>,
+        },
+        firefox: {
+            label: () => "installer",
+            menu: () => <img src="assets/more.svg"/>,
+            install: () => <img src="assets/install.svg"/>,
+        },
+    };
+    return <><h1>Hello client</h1>
+        <Link href="/loyal/qrcode">Mon QR code</Link>
+        <br/>
+        <Link href={`/loyal/${id}`}>
+            Mes points de fidélité
+        </Link>
+        <br/>
+        <button id="button">Installer</button>
+        {!init && (
+            <dialog id="dialog">
+                <div id="cancel">fermer</div>
+                <br/>
+                Pour installer l'application sur votre mobile,
+                <br/>
+                parcourez le menu de votre navigateur{" "}
+                {icons[isFirefox() ? "firefox" : "ios"].menu()} <br/>
+                puis « {icons[isFirefox() ? "firefox" : "ios"].label()} »{" "}
+                {icons[isFirefox() ? "firefox" : "ios"].install()}
+            </dialog>
+        )}</>
+
 }
+

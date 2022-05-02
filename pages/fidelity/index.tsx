@@ -1,38 +1,53 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import {useRouter} from "next/router";
+import {useEffect, useState} from "react";
 
 export default function Fidelity() {
-  const [email, setEmail] = useState("");
-  const [fidelityEmail, setFidelityEmail] = useState("");
-  const router = useRouter();
+    const [email, setEmail] = useState("");
+    const [fidelityEmail, setFidelityEmail] = useState("");
+    const [fidelityOwner, setFidelityOwner] = useState("");
+    const router = useRouter();
 
-  const send = () => {
-    localStorage.setItem("fidelity-email", email);
-    router.push(`/fidelity/email-sent`);
-  };
+    const send = async (e) => {
+        e.preventDefault()
+        const res = await fetch('/api/loyal/add', {
+            method: 'POST',
+            body: JSON.stringify({email})
+        })
 
-  useEffect(() => {
-    if (localStorage && !fidelityEmail) {
-      setFidelityEmail(localStorage.getItem("fidelity-email"));
-    }
-  }, []);
+        const data = await res.json();
 
-  const content = () => {
-    const html = <div>{fidelityEmail}</div>;
+        if (!fidelityOwner) {
+            localStorage.setItem("fidelity-email", data.email);
+        }
+        const url = fidelityOwner ? '/loyal' : '/fidelity/email-sent';
 
-    if (!fidelityEmail) {
-      return (
-        <>
-          <input
-            type="text"
-            placeholder="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button onClick={send}>devenir fidèle</button>
-        </>
-      );
-    }
-    return html;
-  };
-  return <section>{content()}</section>;
+        router.push(url)
+    };
+
+    useEffect(() => {
+        if (localStorage && localStorage.getItem("fidelity-email")) {
+            localStorage.removeItem("fidelity-email")
+        }
+    }, []);
+
+    useEffect(() => {
+        if (localStorage && !fidelityOwner) {
+            setFidelityOwner(localStorage.getItem("fidelity-owner"));
+        }
+    }, []);
+
+    const content = () => {
+        return (
+            <form onSubmit={send}>
+                <input
+                    type="text"
+                    placeholder="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input type='submit' value={fidelityOwner==='ok' ? 'ajouter un·e fidèle' : "devenir fidèle"} />
+            </form>
+        );
+
+    };
+    return <section>{content()}</section>;
 }

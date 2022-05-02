@@ -8,7 +8,7 @@ export default async function handle(
 ) {
   if (req.method === "DELETE") {
     const result = await prisma.loyal.delete({
-      where: { email: req.body.email },
+      where: { email: JSON.parse(req.body).email },
     });
     if (result) {
       res.json({ response: "ok" });

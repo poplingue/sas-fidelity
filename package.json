@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "npx prisma generate && next start",
-    "seed": "ts-node prisma/seed.ts"
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:init": "npx prisma generate"
   },
   "dependencies": {
     "@emotion/react": "^11.9.0",

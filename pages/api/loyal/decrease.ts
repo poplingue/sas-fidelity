@@ -8,12 +8,12 @@ export default async function handle(
 ) {
   if (req.method === "PATCH") {
     const loyal = await prisma.loyal.findUnique({
-      where: { email: req.body.email },
+      where: { email: JSON.parse(req.body).email },
     });
 
     if (loyal && loyal.cash > 1) {
       const newLoyal = await prisma.loyal.update({
-        where: { email: req.body.email },
+        where: { email: JSON.parse(req.body).email },
         data: { cash: loyal.cash - 1 },
       });
       res.json({ ...newLoyal, response: "ok" });

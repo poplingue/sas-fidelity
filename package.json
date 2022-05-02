@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "lint": "next lint",
-    "build": "npx prisma migrate dev --name init && next build",
+    "build": "npx prisma db push && next build",
     "start": "next start",
     "prisma:seed": "ts-node prisma/seed.ts",
     "prisma:init": "npx prisma generate"

@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Loyal {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cash      Int @default(1)
+  present   Int @default(0)
+}
+
+model Owner {
+  id        Int      @id @default(autoincrement())
+  secret  String
+}

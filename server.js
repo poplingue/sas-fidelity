@@ -7,26 +7,26 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app
-    .prepare()
-    .then(() => {
-        const server = express();
+  .prepare()
+  .then(() => {
+    const server = express();
 
-        // requests to /service-worker.js
-        server.get(
-            "/service-worker.js",
-            express.static(path.join(__dirname, ".next"))
-        );
+    // requests to /service-worker.js
+    server.get(
+      "/service-worker.js",
+      express.static(path.join(__dirname, ".next"))
+    );
 
-        // all other requests
-        server.get("*", (req, res) => {
-            return handle(req, res);
-        });
-        server.listen(3000, (err) => {
-            if (err) throw err;
-            console.log("> Ready on http://localhost:3000");
-        });
-    })
-    .catch((ex) => {
-        console.error(ex.stack);
-        process.exit(1);
+    // all other requests
+    server.get("*", (req, res) => {
+      return handle(req, res);
     });
+    server.listen(3000, (err) => {
+      if (err) throw err;
+      console.log("> Ready on http://localhost:3000");
+    });
+  })
+  .catch((ex) => {
+    console.error(ex.stack);
+    process.exit(1);
+  });

@@ -14,13 +14,16 @@ module.exports = withPlugins(
         register: true,
         skipWaiting: true,
         runtimeCaching,
-        buildExcludes: [/middleware-manifest.json$/]
-      }
-    })
+        buildExcludes: [/middleware-manifest.json$/],
+      },
+    }),
   ],
   {
+    serverRuntimeConfig: {
+      emailPassword: process.env.EMAIL_PASSWORD,
+    },
     publicRuntimeConfig: {
-      baseUrl: process.env.BASE_URL
-    }
+      baseUrl: process.env.BASE_URL,
+    },
   }
 );

@@ -7,6 +7,7 @@ const { publicRuntimeConfig } = getConfig();
 
 export interface ExpectedQuery {
   email?: string;
+  id?: string;
 }
 
 export default function EmailSent() {
@@ -92,7 +93,9 @@ export default function EmailSent() {
       {email && (
         <>
           {email}
-          <QRCode value={`${publicRuntimeConfig.baseUrl}/scan?email=${email}`} />
+          <QRCode
+            value={`${publicRuntimeConfig.baseUrl}/scan?email=${email}`}
+          />
         </>
       )}
       <Link href="/">Accueil</Link>

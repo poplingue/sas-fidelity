@@ -26,6 +26,7 @@ export default function All() {
         return (
           <div key={loyal.email}>
             <Link href={`/loyal/${loyal.id}`}>{loyal.email}</Link>
+            <span>{loyal.cash}</span>
           </div>
         );
       })}

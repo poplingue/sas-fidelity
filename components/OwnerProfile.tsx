@@ -3,8 +3,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { niceFullDate } from "../helpers/utils";
 import Link from "next/link";
+import getConfig from "next/config";
 
-export default function OwnerProfile({ loyal }) {
+const { publicRuntimeConfig } = getConfig();
+
+export default function OwnerProfile({ loyal, scan }) {
   const router = useRouter();
   const [profile, setProfile] = useState(loyal);
 
@@ -40,11 +43,14 @@ export default function OwnerProfile({ loyal }) {
   return (
     <section>
       <h2>Owner profile</h2>
+      <p>scan: {scan}</p>
       <div>Email : {profile.email}</div>
       <div>Passages en caisse : {profile.cash}</div>
       <div>Date de création : {niceFullDate(profile.createdAt)}</div>
       <div>Cadeaux reçus : {profile.present}</div>
-      <QRCode value={profile.email} />
+      <QRCode
+        value={`${publicRuntimeConfig.baseUrl}/scan?email=${profile.email}`}
+      />
       <hr />
       <button onClick={() => cash("increase")}>+</button>
       <button onClick={() => cash("decrease")}>-</button>

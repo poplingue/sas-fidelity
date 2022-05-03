@@ -1,7 +1,9 @@
 import QRCode from "react-qr-code";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import getConfig from "next/config";
+
+const { publicRuntimeConfig } = getConfig();
 
 export default function Code() {
   const [loyal, setLoyal] = useState(null);
@@ -30,9 +32,12 @@ export default function Code() {
       {loyal && (
         <>
           {loyal.email}
-          <QRCode value={loyal.email} />
+          <QRCode
+            value={`${publicRuntimeConfig.baseUrl}/scan?email=${loyal.email}`}
+          />
         </>
       )}
+          <br/>
       <Link href="/">Accueil</Link>
       <br />
     </section>

@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import QRCode from "react-qr-code";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
-interface ExpectedQuery {
+export interface ExpectedQuery {
   email?: string;
 }
 
@@ -90,7 +92,7 @@ export default function EmailSent() {
       {email && (
         <>
           {email}
-          <QRCode value={email} />
+          <QRCode value={`${publicRuntimeConfig.baseUrl}/scan?email=${email}`} />
         </>
       )}
       <Link href="/">Accueil</Link>

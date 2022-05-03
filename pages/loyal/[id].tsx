@@ -8,7 +8,7 @@ export default function Profile() {
   const [loyal, setLoyal] = useState(null);
 
   const {
-    query: { id },
+    query: { id, scan },
   } = useRouter();
 
   useEffect(() => {
@@ -16,6 +16,8 @@ export default function Profile() {
       setFidelityOwner(localStorage.getItem("fidelity-owner"));
     }
   }, [fidelityOwner]);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     async function getData() {
@@ -37,7 +39,7 @@ export default function Profile() {
   return (
     <>
       {fidelityOwner === "ok" ? (
-        <>{loyal && <OwnerProfile loyal={loyal} />}</>
+        <>{loyal && <OwnerProfile scan={scan} loyal={loyal} />}</>
       ) : (
         <>{loyal && <ClientProfile loyal={loyal} />}</>
       )}

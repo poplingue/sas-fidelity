@@ -19,10 +19,12 @@ export default async function handle(
         data: { email: JSON.parse(req.body).email },
       });
 
+      console.log("==== without loyal sendEmail() ==== ", result);
       sendEmail(JSON.parse(req.body).email, result.id);
 
       res.json(result);
     } else {
+      console.log("==== with loyal sendEmail() ==== ", loyal);
       sendEmail(JSON.parse(req.body).email, loyal.id);
 
       res.json({

@@ -8,6 +8,7 @@ export default function ClientHome({ id }) {
 
   const listenToUserAction = () => {
     const installBtn = document.querySelector("#button");
+
     if (installBtn) {
       installBtn.addEventListener("click", presentAddToHome);
     }

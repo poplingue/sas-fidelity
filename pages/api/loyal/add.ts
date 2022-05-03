@@ -9,16 +9,6 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "smtp.zoho.com",
-    auth: {
-      user: "paulinegc@zoho.com",
-      pass: serverRuntimeConfig.emailPassword,
-    },
-    secure: true,
-  });
-
   if (req.method === "POST") {
     const loyal = await prisma.loyal.findUnique({
       where: { email: JSON.parse(req.body).email },
@@ -29,27 +19,48 @@ export default async function handle(
         data: { email: JSON.parse(req.body).email },
       });
 
-      const mailData = {
-        from: "paulinegc@zoho.com",
-        to: JSON.parse(req.body).email,
-        subject: `Message From Un salon à soi`,
-        text: `<div>ouech text</div>`,
-        html: `<div><a href="${publicRuntimeConfig.baseUrl}?id=${result.id}">Lien</a></div>`,
-      };
-
-      transporter.sendMail(mailData, function (err, info) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(info);
-        }
-      });
+      sendEmail(JSON.parse(req.body).email, result.id);
 
       res.json(result);
     } else {
-      res.json({ response: "ko", msg: "Email already exists" });
+      sendEmail(JSON.parse(req.body).email, loyal.id);
+
+      res.json({
+        id: loyal.id,
+        email: loyal.email,
+        response: "ko",
+        msg: "Email already exists, QR code sent",
+      });
     }
   } else {
     res.json({ response: "ko", msg: "Bad request method" });
   }
+}
+
+function sendEmail(email, id) {
+  const transporter = nodemailer.createTransport({
+    port: 465,
+    host: "smtp.zoho.com",
+    auth: {
+      user: "paulinegc@zoho.com",
+      pass: serverRuntimeConfig.emailPassword,
+    },
+    secure: true,
+  });
+
+  const mailData = {
+    from: "paulinegc@zoho.com",
+    to: email,
+    subject: `Message From Un salon à soi`,
+    text: `<div>ouech text</div>`,
+    html: `<div><a href="${publicRuntimeConfig.baseUrl}?id=${id}">Lien</a></div>`,
+  };
+
+  transporter.sendMail(mailData, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  });
 }

@@ -1,16 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import QRCode from "react-qr-code";
 import Link from "next/link";
+import { NextRouter, useRouter } from "next/router";
 
-export default function ClientHome({ id }) {
+interface ExpectedQuery {
+  email?: string;
+}
+
+export default function EmailSent() {
   let promptEvent = null;
-  const [init, setInit] = useState(true);
-  const [fidelityEmail, setFidelityEmail] = useState("");
+
+  const { query }: NextRouter = useRouter();
+  const { email }: ExpectedQuery = query;
 
   const listenToUserAction = () => {
     const installBtn = document.querySelector("#button");
-    if (installBtn) {
-      installBtn.addEventListener("click", presentAddToHome);
-    }
+    installBtn.addEventListener("click", presentAddToHome);
   };
 
   const isInStandaloneMode = () =>
@@ -49,18 +54,6 @@ export default function ClientHome({ id }) {
   };
 
   useEffect(() => {
-    if (!fidelityEmail) {
-      setFidelityEmail(localStorage.getItem("fidelity-id"));
-    }
-  }, [fidelityEmail]);
-
-  useEffect(() => {
-    if (init) {
-      setInit(false);
-    }
-  }, [init]);
-
-  useEffect(() => {
     if ("serviceWorker" in navigator) {
       window.addEventListener("fetch", () => console.log("fetch"));
 
@@ -69,6 +62,7 @@ export default function ClientHome({ id }) {
       } else {
         window.addEventListener("beforeinstallprompt", function (e) {
           e.preventDefault();
+          // eslint-disable-next-line react-hooks/exhaustive-deps
           promptEvent = e;
           listenToUserAction();
         });
@@ -89,39 +83,17 @@ export default function ClientHome({ id }) {
       });
     }
   }, []);
-
-  const icons = {
-    ios: {
-      label: () => `ajouter à l'écran d'accueil`,
-      menu: () => <img src="assets/ios-menu.svg" />,
-      install: () => <img src="assets/ios-install.svg" />,
-    },
-    firefox: {
-      label: () => "installer",
-      menu: () => <img src="assets/more.svg" />,
-      install: () => <img src="assets/install.svg" />,
-    },
-  };
   return (
-    <>
-      <h1>Hello client</h1>
-      <Link href={`/loyal/qrcode`}>Mon QR code</Link>
+    <section>
+      Vous avez reçu un email Bienvenue dans la communauté
       <br />
-      <Link href={`/loyal/${id}`}>Mes points de fidélité</Link>
-      <br />
-      <button id="button">Installer</button>
-      {!init && (
-        <dialog id="dialog">
-          <div id="cancel">fermer</div>
-          <br />
-          {`Pour installer l'application sur votre mobile,`}
-          <br />
-          parcourez le menu de votre navigateur{" "}
-          {icons[isFirefox() ? "firefox" : "ios"].menu()} <br />
-          puis « {icons[isFirefox() ? "firefox" : "ios"].label()} »{" "}
-          {icons[isFirefox() ? "firefox" : "ios"].install()}
-        </dialog>
+      {email && (
+        <>
+          {email}
+          <QRCode value={email} />
+        </>
       )}
-    </>
+      <Link href="/">Accueil</Link>
+    </section>
   );
 }

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../lib/prisma";
+import { Prisma } from "@prisma/client";
 
 // POST /api/loyal/one
 export default async function handle(
@@ -8,7 +9,7 @@ export default async function handle(
 ) {
   if (req.method === "POST") {
     const result = await prisma.loyal.findUnique({
-      where: { email: req.body.email },
+      where: { id: JSON.parse(req.body).id },
     });
     if (result) {
       res.json({ ...result, response: "ok" });

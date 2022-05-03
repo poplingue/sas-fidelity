@@ -1,35 +1,46 @@
-import {PrismaClient} from "@prisma/client";
-import {GetServerSideProps} from "next";
-import {useEffect, useState} from "react";
-import OwnerProfile from '../../components/OwnerProfile'
-import ClientProfile from '../../components/ClientProfile'
+import { useEffect, useState } from "react";
+import OwnerProfile from "../../components/OwnerProfile";
+import ClientProfile from "../../components/ClientProfile";
+import { useRouter } from "next/router";
 
-export default function Profile({loyal}) {
-    const [fidelityOwner, setFidelityOwner] = useState("");
+export default function Profile() {
+  const [fidelityOwner, setFidelityOwner] = useState("");
+  const [loyal, setLoyal] = useState(null);
 
-    useEffect(() => {
-        if (localStorage && !fidelityOwner) {
-            setFidelityOwner(localStorage.getItem("fidelity-owner"));
-        }
-    }, []);
+  const {
+    query: { id },
+  } = useRouter();
 
-    return <>{fidelityOwner === 'ok' ? <OwnerProfile loyal={loyal}/> : <ClientProfile loyal={loyal}/>}</>
+  useEffect(() => {
+    if (localStorage && !fidelityOwner) {
+      setFidelityOwner(localStorage.getItem("fidelity-owner"));
+    }
+  }, [fidelityOwner]);
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(`/api/loyal/one`, {
+        method: "POST",
+        body: JSON.stringify({ id: Number(id) }),
+      });
+
+      return await res.json();
+    }
+
+    if (!loyal) {
+      getData().then((data) => {
+        setLoyal(data);
+      });
+    }
+  }, [id, loyal]);
+
+  return (
+    <>
+      {fidelityOwner === "ok" ? (
+        <>{loyal && <OwnerProfile loyal={loyal} />}</>
+      ) : (
+        <>{loyal && <ClientProfile loyal={loyal} />}</>
+      )}
+    </>
+  );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({params}) => {
-    const prisma = new PrismaClient();
-
-    const loyal = await prisma.loyal.findUnique({
-        where: {id: Number(params.id)}
-    });
-
-    return {
-        props: {
-            loyal: {
-                ...loyal,
-                createdAt: loyal.createdAt.toISOString(),
-                updatedAt: loyal.updatedAt.toISOString(),
-            }
-        },
-    };
-};

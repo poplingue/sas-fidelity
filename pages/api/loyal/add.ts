@@ -40,6 +40,9 @@ export default async function handle(
 function sendEmail(email, id) {
   const transporter = nodemailer.createTransport({
     port: 465,
+    tls: {
+      ciphers: "SSLv3",
+    },
     host: "smtp.zoho.com",
     auth: {
       user: "paulinegc@zoho.com",
@@ -56,11 +59,12 @@ function sendEmail(email, id) {
     html: `<div><a href="${publicRuntimeConfig.baseUrl}?id=${id}">Lien</a></div>`,
   };
 
-  transporter.sendMail(mailData, function (err, info) {
+  transporter.sendMail(mailData, (err, info) => {
     if (err) {
       console.log(err);
+      console.log("==== Nodemailer Err ==== ", err);
     } else {
-      console.log(info);
+      console.log("==== Nodemailer Info ==== ", info);
     }
   });
 }

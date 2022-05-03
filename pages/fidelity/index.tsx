@@ -15,7 +15,6 @@ export default function Fidelity() {
     });
 
     const data = await res.json();
-    debugger; // eslint-disable-line
     if (!fidelityOwner) {
       localStorage.setItem("fidelity-id", data.id);
     }

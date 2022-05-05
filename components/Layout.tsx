@@ -30,12 +30,7 @@ export default function Layout({ children }) {
     >
       <main>
         <Grid.Container justify="center" gap={4}>
-          <Grid
-            style={{
-              position: "absolute",
-              top: 0
-            }}
-          >
+          <Grid>
             <Button.Group size="lg" color="gradient" bordered>
               {pathname === "/" && !fidelityOwner ? (
                 <Button as="a" href="/fidelity">

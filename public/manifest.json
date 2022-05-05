@@ -1,5 +1,5 @@
 {
-  "name": "Sas fidelity",
+  "name": "un Salon à soi",
   "short_name": "Fidelity",
   "icons": [
     {
@@ -45,6 +45,6 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#0de55c",
-  "background_color": "#5ffc99"
+  "theme_color": "#7928ca",
+  "background_color": "#7928ca"
 }

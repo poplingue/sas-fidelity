@@ -4,7 +4,7 @@ import {
   Table,
   useCollator,
   useAsyncList,
-  Text,
+  Text
 } from "@nextui-org/react";
 import Link from "next/link";
 
@@ -19,13 +19,13 @@ export default function All() {
 
   const load = async () => {
     const res = await fetch(`/api/loyal/all`, {
-      method: "GET",
+      method: "GET"
     });
 
     const data = await res.json();
 
     return {
-      items: data,
+      items: data
     };
   };
 
@@ -39,7 +39,7 @@ export default function All() {
           cmp *= -1;
         }
         return cmp;
-      }),
+      })
     };
   };
 
@@ -48,7 +48,7 @@ export default function All() {
   useEffect(() => {
     async function getData() {
       const res = await fetch(`/api/loyal/all`, {
-        method: "GET",
+        method: "GET"
       });
 
       return await res.json();
@@ -88,13 +88,13 @@ export default function All() {
                 {(columnKey) => (
                   <Table.Cell>
                     {columnKey === "email" ? (
-                      <Link href={`/loyal/${item.id}`}>
+                      <Link href={`/loyal/${item.id}`} passHref>
                         <Text
                           as="span"
                           size="1rem"
                           css={{
                             textDecoration: "underline",
-                            color: "#0070F3",
+                            color: "#0070F3"
                           }}
                         >
                           {item[columnKey]}

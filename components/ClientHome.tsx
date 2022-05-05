@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   Button,
   Loading,
   Grid,
   Modal,
   useModal,
-  Text,
+  Text
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 
@@ -40,16 +41,20 @@ export default function ClientHome({ id }) {
   };
 
   const presentAddToHome = () => {
-    if ((isIos() && !isInStandaloneMode()) || isFirefox()) {
+    if ((isIos() && !isInStandaloneMode()) || isFirefox() || !promptEvent) {
       handler();
     } else {
-      promptEvent.prompt(); // Wait for the user to respond to the prompt
+      promptEvent.prompt();
+
       promptEvent.userChoice.then((choice) => {
+        console.log("==== userChoice ==== ", choice);
+
         if (choice.outcome === "accepted") {
           console.log("User accepted");
         } else {
           console.log("User dismissed");
         }
+        promptEvent = null;
       });
     }
   };
@@ -68,18 +73,6 @@ export default function ClientHome({ id }) {
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      window.addEventListener("fetch", () => console.log("fetch"));
-
-      if ((isIos() && !isInStandaloneMode()) || isFirefox()) {
-        listenToUserAction();
-      } else {
-        window.addEventListener("beforeinstallprompt", function (e) {
-          e.preventDefault();
-          promptEvent = e;
-          listenToUserAction();
-        });
-      }
-
       window.addEventListener("load", function () {
         navigator.serviceWorker.register("/service-worker.js").then(
           function (registration) {
@@ -93,20 +86,35 @@ export default function ClientHome({ id }) {
           }
         );
       });
+
+      window.addEventListener("fetch", () => console.log("fetch"));
+
+      if (!promptEvent) {
+        window.addEventListener("beforeinstallprompt", function (e) {
+          e.preventDefault();
+          promptEvent = e;
+
+          const installBtn = document.querySelector("#button");
+
+          if (installBtn) {
+            installBtn.addEventListener("click", presentAddToHome);
+          }
+        });
+      }
     }
   }, []);
 
   const icons = {
     ios: {
       label: () => `cliquer sur « ajouter à l'écran d'accueil »`,
-      menu: () => <img src="assets/ios-menu.svg" />,
-      install: () => <img src="assets/ios-install.svg" />,
+      menu: () => <Image src="assets/ios-menu.svg" alt="menu ios" />,
+      install: () => <Image src="assets/ios-install.svg" alt="install ios" />
     },
     firefox: {
       label: () => "installer",
-      menu: () => <img src="assets/more.svg" />,
-      install: () => <img src="assets/install.svg" />,
-    },
+      menu: () => <Image src="assets/more.svg" alt="more firefox" />,
+      install: () => <Image src="assets/install.svg" alt="install firefox" />
+    }
   };
 
   const goTo = (url: string) => {
@@ -140,7 +148,14 @@ export default function ClientHome({ id }) {
         </Button>
       </Grid>
       <Grid>
-        <Button id="button" color="secondary" size="xl" bordered rounded>
+        <Button
+          id="button"
+          color="secondary"
+          size="xl"
+          bordered
+          rounded
+          onClick={presentAddToHome}
+        >
           {`Installer l'application`}
         </Button>
       </Grid>
@@ -155,7 +170,7 @@ export default function ClientHome({ id }) {
           <Modal.Header>
             <Text
               css={{
-                textGradient: "45deg, $blue500 -20%, $pink500 70%",
+                textGradient: "45deg, $blue500 -20%, $pink500 70%"
               }}
               size={26}
             >{`Installer l'application`}</Text>

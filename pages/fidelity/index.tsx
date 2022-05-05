@@ -14,7 +14,7 @@ export default function Fidelity() {
     e.preventDefault();
     const res = await fetch("/api/loyal/add", {
       method: "POST",
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email })
     });
 
     const data = await res.json();
@@ -64,25 +64,24 @@ export default function Fidelity() {
         <article>
           <Text
             as="p"
-            size="1.5rem"
+            size="1.6rem"
             css={{
-              textGradient: "45deg, $blue500 -20%, $pink500 70%",
+              textGradient: "45deg, $blue500 -20%, $pink500 70%"
             }}
           >
             Ici, pas de spam ou de revente de données, juste un mail pour être
-            dans notre liste de fidèles :
+            dans notre liste de fidèles
           </Text>
         </article>
       </Grid>
       <Grid>
-        <Grid.Container gap={2}>
-          <form onSubmit={send}>
-            <Grid>
+        <form onSubmit={send}>
+          <Grid.Container>
+            <Grid css={{ py: "$8" }}>
               <Input
-                css={{ w: "100%" }}
                 bordered
                 status={statusEmailInput()}
-                size="lg"
+                size="xl"
                 type="email"
                 label="Email"
                 clearable
@@ -96,13 +95,12 @@ export default function Fidelity() {
                 href="/loyal/qrcode"
                 color="gradient"
                 size="xl"
-                rounded
               >
                 {fidelityOwner === "ok" ? "Ajouter un·e fidèle" : "Valider"}
               </Button>
             </Grid>
-          </form>
-        </Grid.Container>
+          </Grid.Container>
+        </form>
       </Grid>
     </>
   );

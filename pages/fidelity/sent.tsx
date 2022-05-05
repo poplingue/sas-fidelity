@@ -20,22 +20,25 @@ export default function EmailSent() {
         <article>
           <Text
             as="p"
-            size="1.5rem"
+            size="1.6rem"
             css={{
               textGradient: "45deg, $blue500 -20%, $pink500 70%",
+              pb: "$8"
             }}
           >
-            Voici votre QR code personnel. Présentez-le à chaque passage en
-            caisse.
+            Voici votre QR code personnel
+          </Text>
+          <Text as="p" size="1.2rem">
+            Présentez-le à chaque passage en caisse
           </Text>
         </article>
       </Grid>
       {email && (
-        <Grid alignContent={"center"}>
+        <Grid alignContent={"center"} css={{ py: "$16" }}>
           <Grid.Container gap={3} direction="column" alignItems={"center"}>
             <Grid xs={12}>
               <QRCode
-                size={200}
+                size={220}
                 value={`${publicRuntimeConfig.baseUrl}/scan?email=${email}`}
               />
             </Grid>

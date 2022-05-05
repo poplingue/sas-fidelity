@@ -11,7 +11,7 @@ export default function Secret() {
 
     const res = await fetch("/api/owner/check", {
       method: "POST",
-      body: JSON.stringify({ secret }),
+      body: JSON.stringify({ secret })
     });
 
     const data = await res.json();
@@ -21,32 +21,23 @@ export default function Secret() {
   };
 
   return (
-    <Grid>
-      <Grid.Container gap={2}>
-        <form onSubmit={send}>
-          <Grid>
-            <Input.Password
-              css={{ w: "100%" }}
-              bordered
-              size="lg"
-              type="password"
-              label="Code secret"
-              onChange={(e) => setSecret(e.target.value)}
-            />
-          </Grid>
-          <Grid>
-            <Button
-              type="submit"
-              href="/loyal/qrcode"
-              color="gradient"
-              size="xl"
-              rounded
-            >
-              Accéder
-            </Button>
-          </Grid>
-        </form>
+    <form onSubmit={send}>
+      <Grid.Container>
+        <Grid css={{ py: "$8" }}>
+          <Input.Password
+            bordered
+            size="xl"
+            type="password"
+            label="Code secret"
+            onChange={(e) => setSecret(e.target.value)}
+          />
+        </Grid>
+        <Grid>
+          <Button type="submit" href="/loyal/qrcode" color="gradient" size="xl">
+            Accéder
+          </Button>
+        </Grid>
       </Grid.Container>
-    </Grid>
+    </form>
   );
 }

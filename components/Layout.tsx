@@ -18,7 +18,8 @@ export default function Layout({ children }) {
     if (!fidelityOwner) {
       setFidelityOwner(owner);
     }
-  }, []);
+  }, [fidelityId, fidelityOwner]);
+
   return (
     <Container
       display="grid"
@@ -28,14 +29,14 @@ export default function Layout({ children }) {
       style={{ height: "100vh" }}
     >
       <main>
-        <Grid.Container justify="center">
+        <Grid.Container justify="center" gap={4}>
           <Grid
             style={{
               position: "absolute",
-              top: 0,
+              top: 0
             }}
           >
-            <Button.Group size="sm" color="gradient" bordered>
+            <Button.Group size="lg" color="gradient" bordered>
               {pathname === "/" && !fidelityOwner ? (
                 <Button as="a" href="/fidelity">
                   QR code

@@ -1,20 +1,58 @@
-import Head from "next/head";
+import { Grid, Container, Button } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
-export default function Layout({children}) {
-    return (
-        <>
-            <Head>
-                <title>SaS Fidelity</title>
-                <meta charSet="utf-8"/>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-                <link rel="manifest" href="manifest.json"/>
-                <link rel="apple-touch-icon" href="img/192x192.png"/>
-                <meta name="theme-color" content="#23e3b4"/>
-            </Head>
-            <main>{children}</main>
-            <footer>
+export default function Layout({ children }) {
+  const [fidelityOwner, setFidelityOwner] = useState("");
+  const [fidelityId, setFidelityId] = useState("");
+  const { pathname } = useRouter();
 
-            </footer>
-        </>
-    )
+  useEffect(() => {
+    const id = localStorage.getItem("fidelity-id");
+    const owner = localStorage.getItem("fidelity-owner");
+
+    if (!fidelityId) {
+      setFidelityId(id);
+    }
+
+    if (!fidelityOwner) {
+      setFidelityOwner(owner);
+    }
+  }, []);
+  return (
+    <Container
+      display="grid"
+      direction="column"
+      justify="center"
+      alignItems="center"
+      style={{ height: "100vh" }}
+    >
+      <main>
+        <Grid.Container justify="center">
+          <Grid
+            style={{
+              position: "absolute",
+              top: 0,
+            }}
+          >
+            <Button.Group size="sm" color="gradient" bordered>
+              {pathname === "/" && !fidelityOwner ? (
+                <Button as="a" href="/fidelity">
+                  QR code
+                </Button>
+              ) : (
+                <Button as="a" href="/" size="xs" color="gradient" bordered>
+                  Accueil
+                </Button>
+              )}
+              <Button as="a" href="/secret">
+                Espace pro
+              </Button>
+            </Button.Group>
+          </Grid>
+        </Grid.Container>
+        {children}
+      </main>
+    </Container>
+  );
 }

@@ -1,38 +1,52 @@
-import {useRouter} from "next/router";
-import {useState} from "react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { Button, Grid, Input } from "@nextui-org/react";
 
 export default function Secret() {
-    const [secret, setSecret] = useState("");
-    const router = useRouter();
+  const [secret, setSecret] = useState("");
+  const router = useRouter();
 
-    const send = async (e) => {
-        e.preventDefault();
+  const send = async (e) => {
+    e.preventDefault();
 
-        const res = await fetch('/api/owner/check', {
-            method: 'POST',
-            body: JSON.stringify({secret})
-        })
+    const res = await fetch("/api/owner/check", {
+      method: "POST",
+      body: JSON.stringify({ secret }),
+    });
 
-        const data = await res.json()
-        localStorage.setItem("fidelity-owner", data.response);
+    const data = await res.json();
+    localStorage.setItem("fidelity-owner", data.response);
 
-        router.push('/');
-    };
+    router.push("/");
+  };
 
-    const content = () => {
-
-        return (
-            <form>
-                <input
-                    type="text"
-                    placeholder="secret"
-                    onChange={(e) => setSecret(e.target.value)}
-                />
-                <button onClick={send}>accéder</button>
-            </form>
-        );
-
-    };
-
-    return <section>{content()}</section>;
+  return (
+    <Grid>
+      <Grid.Container gap={2}>
+        <form onSubmit={send}>
+          <Grid>
+            <Input.Password
+              css={{ w: "100%" }}
+              bordered
+              size="lg"
+              type="password"
+              label="Code secret"
+              onChange={(e) => setSecret(e.target.value)}
+            />
+          </Grid>
+          <Grid>
+            <Button
+              type="submit"
+              href="/loyal/qrcode"
+              color="gradient"
+              size="xl"
+              rounded
+            >
+              Accéder
+            </Button>
+          </Grid>
+        </form>
+      </Grid.Container>
+    </Grid>
+  );
 }

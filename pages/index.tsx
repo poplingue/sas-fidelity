@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import Layout from "../components/Layout";
 import OwnerHome from "../components/OwnerHome";
 import ClientHome from "../components/ClientHome";
-import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
 import { ExpectedQuery } from "./fidelity/sent";
+import { Button, Grid, Container, Text } from "@nextui-org/react";
 
 export default function Home() {
   const [fidelityOwner, setFidelityOwner] = useState("");
@@ -46,12 +45,25 @@ export default function Home() {
   }, [fidelityId, id, loyal]);
 
   return (
-    <Layout>
-      <Link href="/secret">connection</Link>
-      <br />
-      <Link href="/fidelity">ajouter</Link>
+    <>
+      {!fidelityOwner && !fidelityId && (
+        <article>
+          <Text
+            as="p"
+            size="1.8rem"
+            css={{
+              textGradient: "60deg, $blue500 -20%, $pink500 100%",
+            }}
+          >
+            {`Bienvenue dans l'application de fidélité du Salon à soi`}
+          </Text>
+          <Text as="p" size="1rem">
+            {`Créer votre QR code personnel avec votre email et présentez-le à chaque passage en caisse. Au bout de 10 passages, une crêpe vous est offerte !`}
+          </Text>
+        </article>
+      )}
       {fidelityOwner === "ok" ? <OwnerHome /> : null}
       {fidelityId ? <ClientHome id={id || loyal?.id} /> : null}
-    </Layout>
+    </>
   );
 }

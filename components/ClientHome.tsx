@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import {
+  Button,
+  Loading,
+  Grid,
+  Modal,
+  useModal,
+  Text,
+} from "@nextui-org/react";
+import { useRouter } from "next/router";
 
 export default function ClientHome({ id }) {
   let promptEvent = null;
+  const { setVisible, bindings } = useModal();
   const [init, setInit] = useState(true);
   const [fidelityEmail, setFidelityEmail] = useState("");
+  const [load, setLoad] = useState(false);
+  const router = useRouter();
+  const handler = () => setVisible(true);
 
   const listenToUserAction = () => {
     const installBtn = document.querySelector("#button");
@@ -28,15 +40,8 @@ export default function ClientHome({ id }) {
   };
 
   const presentAddToHome = () => {
-    const dialog = document.getElementById("dialog");
-
-    const cancelButton = document.getElementById("cancel");
-    cancelButton.addEventListener("click", function () {
-      dialog["close"]();
-    });
-
     if ((isIos() && !isInStandaloneMode()) || isFirefox()) {
-      dialog["showModal"]();
+      handler();
     } else {
       promptEvent.prompt(); // Wait for the user to respond to the prompt
       promptEvent.userChoice.then((choice) => {
@@ -93,7 +98,7 @@ export default function ClientHome({ id }) {
 
   const icons = {
     ios: {
-      label: () => `ajouter à l'écran d'accueil`,
+      label: () => `cliquer sur « ajouter à l'écran d'accueil »`,
       menu: () => <img src="assets/ios-menu.svg" />,
       install: () => <img src="assets/ios-install.svg" />,
     },
@@ -103,26 +108,78 @@ export default function ClientHome({ id }) {
       install: () => <img src="assets/install.svg" />,
     },
   };
+
+  const goTo = (url: string) => {
+    setLoad(true);
+
+    router.push(url).then(() => {
+      setLoad(false);
+    });
+  };
+
   return (
-    <>
-      <h1>Hello client</h1>
-      <Link href={`/loyal/qrcode`}>Mon QR code</Link>
-      <br />
-      <Link href={`/loyal/${id}`}>Mes points de fidélité</Link>
-      <br />
-      <button id="button">Installer</button>
+    <Grid.Container gap={2} justify={"center"}>
+      <Grid>
+        <Button
+          onClick={() => goTo("/loyal/qrcode")}
+          color="gradient"
+          size="xl"
+          rounded
+        >
+          {load ? <Loading color="white" type="points" /> : "Mon QR code"}
+        </Button>
+      </Grid>
+      <Grid>
+        <Button
+          color="gradient"
+          onClick={() => goTo(`/loyal/${id}`)}
+          size="xl"
+          rounded
+        >
+          {load ? <Loading color="white" type="points" /> : "Mon profil"}
+        </Button>
+      </Grid>
+      <Grid>
+        <Button id="button" color="secondary" size="xl" bordered rounded>
+          {`Installer l'application`}
+        </Button>
+      </Grid>
       {!init && (
-        <dialog id="dialog">
-          <div id="cancel">fermer</div>
-          <br />
-          {`Pour installer l'application sur votre mobile,`}
-          <br />
-          parcourez le menu de votre navigateur{" "}
-          {icons[isFirefox() ? "firefox" : "ios"].menu()} <br />
-          puis « {icons[isFirefox() ? "firefox" : "ios"].label()} »{" "}
-          {icons[isFirefox() ? "firefox" : "ios"].install()}
-        </dialog>
+        <Modal
+          scroll
+          width="600px"
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+          {...bindings}
+        >
+          <Modal.Header>
+            <Text
+              css={{
+                textGradient: "45deg, $blue500 -20%, $pink500 70%",
+              }}
+              size={26}
+            >{`Installer l'application`}</Text>
+          </Modal.Header>
+          <Modal.Body>
+            <Text as="p" size={22}>
+              Parcourez le menu de votre navigateur{" "}
+              <Text as="p" size={22}>
+                puis {icons[isFirefox() ? "firefox" : "ios"].label()}
+              </Text>
+            </Text>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              auto
+              bordered
+              color="secondary"
+              onClick={() => setVisible(false)}
+            >
+              Fermer
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
-    </>
+    </Grid.Container>
   );
 }

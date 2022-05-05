@@ -2,8 +2,8 @@ import QRCode from "react-qr-code";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { niceFullDate } from "../helpers/utils";
-import Link from "next/link";
 import getConfig from "next/config";
+import { Grid, Card, Text, Divider, Button, Loading } from "@nextui-org/react";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -41,23 +41,58 @@ export default function OwnerProfile({ loyal, scan }) {
   };
 
   return (
-    <section>
-      <h2>Owner profile</h2>
-      <p>scan: {scan}</p>
-      <div>Email : {profile.email}</div>
-      <div>Passages en caisse : {profile.cash}</div>
-      <div>Date de création : {niceFullDate(profile.createdAt)}</div>
-      <div>Cadeaux reçus : {profile.present}</div>
-      <QRCode
-        value={`${publicRuntimeConfig.baseUrl}/scan?email=${profile.email}`}
-      />
-      <hr />
-      <button onClick={() => cash("increase")}>+</button>
-      <button onClick={() => cash("decrease")}>-</button>
-      <hr />
-      <button onClick={confirmBeforeClick}>Supprimer</button>
-      <hr />
-      <Link href="/">accueil</Link>
-    </section>
+    <Grid.Container justify={"center"}>
+      <Grid>
+        <Card shadow css={{ background: "#7928ca", py: "$2" }}>
+          <Card.Header>
+            <Text css={{ fontWeight: "$bold", color: "$white" }}>
+              {profile.email}
+            </Text>
+          </Card.Header>
+          <Divider />
+          <Card.Body css={{ py: "$6" }}>
+            <Text css={{ color: "$white" }}>
+              Passages en caisse : {profile.cash}
+            </Text>
+            <Text css={{ color: "$white" }}>
+              Cadeaux reçus : {profile.present}
+            </Text>
+          </Card.Body>
+          <Divider />
+          <Card.Footer>
+            <Text css={{ color: "$white" }}>
+              Date de création : {niceFullDate(profile.createdAt)}
+            </Text>
+          </Card.Footer>
+        </Card>
+      </Grid>
+      <Grid css={{ p: "$6" }}>
+        <QRCode
+          size={160}
+          value={`${publicRuntimeConfig.baseUrl}/scan?email=${profile.email}`}
+        />
+      </Grid>
+      <Grid>
+        <Button.Group size="sm" bordered>
+          <Button onClick={() => cash("decrease")} rounded>
+            - 1 passage
+          </Button>
+          <Button onClick={() => cash("increase")} rounded>
+            + 1 passage
+          </Button>
+        </Button.Group>
+      </Grid>
+      <Grid css={{ py: "$4" }}>
+        <Button
+          onClick={confirmBeforeClick}
+          color="secondary"
+          size="sm"
+          bordered
+          rounded
+        >
+          supprimer
+        </Button>
+      </Grid>
+    </Grid.Container>
   );
 }

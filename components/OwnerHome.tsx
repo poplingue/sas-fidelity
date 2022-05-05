@@ -1,11 +1,13 @@
-import Link from "next/link";
+import { Grid, Button, Loading } from "@nextui-org/react";
 
 export default function OwnerHome() {
   return (
-    <>
-      <h1>Hello owner</h1>
-      <Link href="/fidelity">ajouter un·e fidèle</Link>
-      <Link href="/loyal">les fidèles</Link>
-    </>
+    <Grid.Container gap={2} justify={"center"}>
+      <Grid>
+        <Button as="a" href="/loyal" color="gradient" size="xl" rounded>
+          Les fidèles
+        </Button>
+      </Grid>
+    </Grid.Container>
   );
 }
